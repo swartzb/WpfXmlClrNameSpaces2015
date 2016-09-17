@@ -9,6 +9,9 @@
         Height="350"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         SizeToContent="Width">
+    <Window.Resources>
+        <local:ListViewWidthConverter x:Key="lvwc" />
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -16,7 +19,8 @@
         </Grid.RowDefinitions>
         <TextBlock Grid.Row="0"
                    FontSize="18"
-                   TextWrapping="WrapWithOverflow">
+                   TextWrapping="WrapWithOverflow"
+                   Width="{Binding ElementName=lv, Converter={StaticResource lvwc}}">
             <TextBlock.Text>
                 The ListView shows details from every XmlnsDefinitionAttribute in all Assemblies returned from AppDomain.CurrentDomain.GetAssemblies().
             </TextBlock.Text>
