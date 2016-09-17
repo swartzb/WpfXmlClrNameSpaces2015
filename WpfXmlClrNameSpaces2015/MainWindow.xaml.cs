@@ -12,6 +12,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Reflection;
+using System.Windows.Markup;
+using System.Collections.ObjectModel;
 
 namespace WpfXmlClrNameSpaces2015
 {
@@ -20,8 +23,18 @@ namespace WpfXmlClrNameSpaces2015
     /// </summary>
     public partial class MainWindow : Window
     {
+        public ObservableCollection<XmlClrNameSpaceItem> XmlClrNameSpaceItems { get; set; }
+
         public MainWindow()
         {
+            List<XmlClrNameSpaceItem> XmlClrNameSpaceList = AppDomain.CurrentDomain.GetAssemblies().
+                SelectMany(assm => assm.GetCustomAttributes(typeof(XmlnsDefinitionAttribute), false).
+                    OfType<XmlnsDefinitionAttribute>().
+                    Select(xda => new XmlClrNameSpaceItem { assem = assm, xmlNs = xda.XmlNamespace, clrNs = xda.ClrNamespace })).
+                ToList<XmlClrNameSpaceItem>();
+
+            XmlClrNameSpaceItems = new ObservableCollection<XmlClrNameSpaceItem>(XmlClrNameSpaceList);
+
             InitializeComponent();
         }
     }

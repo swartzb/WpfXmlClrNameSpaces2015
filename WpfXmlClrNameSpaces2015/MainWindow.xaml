@@ -5,8 +5,35 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfXmlClrNameSpaces2015"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="XML Namespaces and CLR Namespaces and Assemblies"
+        Height="350"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        SizeToContent="Width">
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Row="0"
+                   FontSize="18"
+                   TextWrapping="WrapWithOverflow">
+            <TextBlock.Text>
+                The ListView shows details from every XmlnsDefinitionAttribute in all Assemblies returned from AppDomain.CurrentDomain.GetAssemblies().
+            </TextBlock.Text>
+        </TextBlock>
+        <ListView x:Name="lv"
+                  Grid.Row="1"
+                  ItemsSource="{Binding Path=XmlClrNameSpaceItems}">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="XML Namespace"
+                                    DisplayMemberBinding="{Binding Path=xmlNs}" />
+                    <GridViewColumn Header="CLR Namespace"
+                                    DisplayMemberBinding="{Binding Path=clrNs}" />
+                    <GridViewColumn Header="Assembly"
+                                    DisplayMemberBinding="{Binding Path=assem}" />
+                </GridView>
+            </ListView.View>
+        </ListView>
     </Grid>
 </Window>
