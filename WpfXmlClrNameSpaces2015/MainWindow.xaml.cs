@@ -46,12 +46,29 @@ namespace WpfXmlClrNameSpaces2015
         {
             GridViewColumnHeader headerClicked =
                   e.OriginalSource as GridViewColumnHeader;
-            ListSortDirection direction;
 
             if (headerClicked != null)
             {
                 if (headerClicked.Role != GridViewColumnHeaderRole.Padding)
                 {
+                    ListSortDirection direction;
+                    string upTriangle = " " + '\u25B2'.ToString();
+                    string downTriangle = " " + '\u25BC'.ToString();
+
+                    // Remove triangle from previously sorted header
+                    if (_lastHeaderClicked != null)
+                    {
+                        string lastHeader = _lastHeaderClicked.Column.Header as string;
+                        if (lastHeader.Contains(upTriangle))
+                        {
+                            _lastHeaderClicked.Column.Header = lastHeader.Replace(upTriangle, "");
+                        }
+                        else if (lastHeader.Contains(downTriangle))
+                        {
+                            _lastHeaderClicked.Column.Header = lastHeader.Replace(downTriangle, "");
+                        }
+                    }
+
                     if (headerClicked != _lastHeaderClicked)
                     {
                         direction = ListSortDirection.Ascending;
@@ -82,23 +99,14 @@ namespace WpfXmlClrNameSpaces2015
                             break;
                     }
 
-                    //if (direction == ListSortDirection.Ascending)
-                    //{
-                    //    headerClicked.Column.HeaderTemplate =
-                    //      Resources["HeaderTemplateArrowUp"] as DataTemplate;
-                    //}
-                    //else
-                    //{
-                    //    headerClicked.Column.HeaderTemplate =
-                    //      Resources["HeaderTemplateArrowDown"] as DataTemplate;
-                    //}
-
-                    //// Remove arrow from previously sorted header
-                    //if (_lastHeaderClicked != null && _lastHeaderClicked != headerClicked)
-                    //{
-                    //    _lastHeaderClicked.Column.HeaderTemplate = null;
-                    //}
-
+                    if (direction == ListSortDirection.Ascending)
+                    {
+                        headerClicked.Column.Header = header + upTriangle;
+                    }
+                    else
+                    {
+                        headerClicked.Column.Header = header + downTriangle;
+                    }
 
                     _lastHeaderClicked = headerClicked;
                     _lastDirection = direction;
