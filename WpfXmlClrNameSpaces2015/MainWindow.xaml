@@ -27,7 +27,8 @@
         </TextBlock>
         <ListView x:Name="lv"
                   Grid.Row="1"
-                  ItemsSource="{Binding Path=XmlClrNameSpaceItems}">
+                  ItemsSource="{Binding Path=XmlClrNameSpaceItems}"
+                  GridViewColumnHeader.Click="lv_ColumnHeaderClick">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="XML Namespace"

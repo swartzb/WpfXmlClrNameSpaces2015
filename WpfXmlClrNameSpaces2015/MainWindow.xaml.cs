@@ -15,6 +15,7 @@ using System.Windows.Shapes;
 using System.Reflection;
 using System.Windows.Markup;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 
 namespace WpfXmlClrNameSpaces2015
 {
@@ -23,7 +24,7 @@ namespace WpfXmlClrNameSpaces2015
     /// </summary>
     public partial class MainWindow : Window
     {
-        public ObservableCollection<XmlClrNameSpaceItem> XmlClrNameSpaceItems { get; set; }
+        public ListCollectionView XmlClrNameSpaceItems { get; set; }
 
         public MainWindow()
         {
@@ -33,9 +34,84 @@ namespace WpfXmlClrNameSpaces2015
                     Select(xda => new XmlClrNameSpaceItem { assem = assm, xmlNs = xda.XmlNamespace, clrNs = xda.ClrNamespace })).
                 ToList<XmlClrNameSpaceItem>();
 
-            XmlClrNameSpaceItems = new ObservableCollection<XmlClrNameSpaceItem>(XmlClrNameSpaceList);
+            XmlClrNameSpaceItems = new ListCollectionView(XmlClrNameSpaceList);
 
             InitializeComponent();
+        }
+
+        GridViewColumnHeader _lastHeaderClicked = null;
+        ListSortDirection _lastDirection = ListSortDirection.Ascending;
+
+        private void lv_ColumnHeaderClick(object sender, RoutedEventArgs e)
+        {
+            GridViewColumnHeader headerClicked =
+                  e.OriginalSource as GridViewColumnHeader;
+            ListSortDirection direction;
+
+            if (headerClicked != null)
+            {
+                if (headerClicked.Role != GridViewColumnHeaderRole.Padding)
+                {
+                    if (headerClicked != _lastHeaderClicked)
+                    {
+                        direction = ListSortDirection.Ascending;
+                    }
+                    else
+                    {
+                        if (_lastDirection == ListSortDirection.Ascending)
+                        {
+                            direction = ListSortDirection.Descending;
+                        }
+                        else
+                        {
+                            direction = ListSortDirection.Ascending;
+                        }
+                    }
+
+                    string header = headerClicked.Column.Header as string;
+                    switch (header)
+                    {
+                        case "XML Namespace":
+                            Sort("xmlNs", direction);
+                            break;
+                        case "CLR Namespace":
+                            Sort("clrNs", direction);
+                            break;
+                        case "Assembly":
+                            Sort("assemName", direction);
+                            break;
+                    }
+
+                    //if (direction == ListSortDirection.Ascending)
+                    //{
+                    //    headerClicked.Column.HeaderTemplate =
+                    //      Resources["HeaderTemplateArrowUp"] as DataTemplate;
+                    //}
+                    //else
+                    //{
+                    //    headerClicked.Column.HeaderTemplate =
+                    //      Resources["HeaderTemplateArrowDown"] as DataTemplate;
+                    //}
+
+                    //// Remove arrow from previously sorted header
+                    //if (_lastHeaderClicked != null && _lastHeaderClicked != headerClicked)
+                    //{
+                    //    _lastHeaderClicked.Column.HeaderTemplate = null;
+                    //}
+
+
+                    _lastHeaderClicked = headerClicked;
+                    _lastDirection = direction;
+                }
+            }
+        }
+
+        private void Sort(string sortBy, ListSortDirection direction)
+        {
+            XmlClrNameSpaceItems.SortDescriptions.Clear();
+            SortDescription sd = new SortDescription(sortBy, direction);
+            XmlClrNameSpaceItems.SortDescriptions.Add(sd);
+            XmlClrNameSpaceItems.Refresh();
         }
     }
 }
