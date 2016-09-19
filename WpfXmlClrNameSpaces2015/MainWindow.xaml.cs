@@ -24,7 +24,7 @@ namespace WpfXmlClrNameSpaces2015
     /// </summary>
     public partial class MainWindow : Window
     {
-        public ListCollectionView XmlClrNameSpaceItems { get; set; }
+        public ObservableCollection<XmlClrNameSpaceItem> XmlClrNameSpaceItems { get; set; }
 
         public MainWindow()
         {
@@ -34,9 +34,13 @@ namespace WpfXmlClrNameSpaces2015
                     Select(xda => new XmlClrNameSpaceItem { assem = assm, xmlNs = xda.XmlNamespace, clrNs = xda.ClrNamespace })).
                 ToList<XmlClrNameSpaceItem>();
 
-            XmlClrNameSpaceItems = new ListCollectionView(XmlClrNameSpaceList);
+            XmlClrNameSpaceItems = new ObservableCollection<XmlClrNameSpaceItem>(XmlClrNameSpaceList);
 
             InitializeComponent();
+
+            ICollectionView dataView =
+              CollectionViewSource.GetDefaultView(lstview.ItemsSource);
+            dataView.Filter = new Predicate<object>(XmlNamespaceFilter);
         }
 
         GridViewColumnHeader _lastHeaderClicked = null;
@@ -116,10 +120,26 @@ namespace WpfXmlClrNameSpaces2015
 
         private void Sort(string sortBy, ListSortDirection direction)
         {
-            XmlClrNameSpaceItems.SortDescriptions.Clear();
+            ICollectionView dataView =
+              CollectionViewSource.GetDefaultView(lstview.ItemsSource);
+
+            dataView.SortDescriptions.Clear();
             SortDescription sd = new SortDescription(sortBy, direction);
-            XmlClrNameSpaceItems.SortDescriptions.Add(sd);
-            XmlClrNameSpaceItems.Refresh();
+            dataView.SortDescriptions.Add(sd);
+            dataView.Refresh();
+        }
+
+        private void ApplyButton_Click(object sender, RoutedEventArgs e)
+        {
+            ICollectionView dataView =
+              CollectionViewSource.GetDefaultView(lstview.ItemsSource);
+
+            dataView.Refresh();
+        }
+
+        bool XmlNamespaceFilter(object obj)
+        {
+            return (string.IsNullOrEmpty(filterText.Text)) ? true : (obj as XmlClrNameSpaceItem).xmlNs.Contains(filterText.Text);
         }
     }
 }

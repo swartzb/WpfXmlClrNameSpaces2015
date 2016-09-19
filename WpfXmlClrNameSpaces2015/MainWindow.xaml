@@ -15,18 +15,34 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
         <TextBlock Grid.Row="0"
                    FontSize="18"
                    TextWrapping="WrapWithOverflow"
-                   Width="{Binding ElementName=lv, Converter={StaticResource lvwc}}">
+                   Width="{Binding ElementName=lstview, Converter={StaticResource lvwc}}">
             <TextBlock.Text>
                 The ListView shows details from every XmlnsDefinitionAttribute in all Assemblies returned from AppDomain.CurrentDomain.GetAssemblies().
             </TextBlock.Text>
         </TextBlock>
-        <ListView x:Name="lv"
-                  Grid.Row="1"
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="XML NameSpace Filter:"
+                       Grid.Column="0" />
+            <TextBox x:Name="filterText"
+                     MinWidth="96"
+                     Grid.Column="1" />
+            <Button Content="Apply"
+                    Click="ApplyButton_Click"
+                    Grid.Column="2" />
+        </Grid>
+        <ListView x:Name="lstview"
+                  Grid.Row="2"
                   ItemsSource="{Binding Path=XmlClrNameSpaceItems}"
                   GridViewColumnHeader.Click="lv_ColumnHeaderClick">
             <ListView.View>
