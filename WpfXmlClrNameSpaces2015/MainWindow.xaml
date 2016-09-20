@@ -11,17 +11,23 @@
         SizeToContent="Width">
     <Window.Resources>
         <local:ListViewWidthConverter x:Key="lvwc" />
+        <Style x:Key="ctrlStyle">
+            <Setter Property="Control.Margin"
+                    Value="6" />
+        </Style>
     </Window.Resources>
-    <Grid>
+    <Grid Style="{StaticResource ctrlStyle}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <TextBlock Grid.Row="0"
+        <TextBlock Style="{StaticResource ctrlStyle}"
+                   Grid.Row="0"
                    FontSize="18"
                    TextWrapping="WrapWithOverflow"
-                   Width="{Binding ElementName=lstview, Converter={StaticResource lvwc}}">
+                   Width="{Binding ElementName=lstview, Converter={StaticResource lvwc}}"
+                   TextAlignment="Center">
             <TextBlock.Text>
                 The ListView shows details from every XmlnsDefinitionAttribute in all Assemblies returned from AppDomain.CurrentDomain.GetAssemblies().
             </TextBlock.Text>
@@ -32,16 +38,20 @@
                 <ColumnDefinition />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <TextBlock Text="XML NameSpace Filter:"
+            <TextBlock Style="{StaticResource ctrlStyle}"
+                       Text="XML NameSpace Filter:"
                        Grid.Column="0" />
-            <TextBox x:Name="filterText"
+            <TextBox Style="{StaticResource ctrlStyle}"
+                     x:Name="filterText"
                      MinWidth="96"
                      Grid.Column="1" />
-            <Button Content="Apply"
+            <Button Style="{StaticResource ctrlStyle}"
+                    Content="Apply"
                     Click="ApplyButton_Click"
                     Grid.Column="2" />
         </Grid>
-        <ListView x:Name="lstview"
+        <ListView Style="{StaticResource ctrlStyle}"
+                  x:Name="lstview"
                   Grid.Row="2"
                   ItemsSource="{Binding Path=XmlClrNameSpaceItems}"
                   GridViewColumnHeader.Click="lv_ColumnHeaderClick">
