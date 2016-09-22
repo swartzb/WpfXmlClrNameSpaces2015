@@ -24,7 +24,7 @@ namespace WpfXmlClrNameSpaces2015
     /// </summary>
     public partial class MainWindow : Window
     {
-        public ObservableCollection<XmlClrNameSpaceItem> XmlClrNameSpaceItems { get; set; }
+        public ListCollectionView XmlClrNameSpaceItems { get; set; }
 
         public MainWindow()
         {
@@ -34,13 +34,11 @@ namespace WpfXmlClrNameSpaces2015
                     Select(xda => new XmlClrNameSpaceItem { assem = assm, xmlNs = xda.XmlNamespace, clrNs = xda.ClrNamespace })).
                 ToList<XmlClrNameSpaceItem>();
 
-            XmlClrNameSpaceItems = new ObservableCollection<XmlClrNameSpaceItem>(XmlClrNameSpaceList);
+            XmlClrNameSpaceItems = new ListCollectionView(XmlClrNameSpaceList);
 
             InitializeComponent();
 
-            ICollectionView dataView =
-              CollectionViewSource.GetDefaultView(lstview.ItemsSource);
-            dataView.Filter = new Predicate<object>(XmlNamespaceFilter);
+            XmlClrNameSpaceItems.Filter = new Predicate<object>(XmlNamespaceFilter);
         }
 
         GridViewColumnHeader _lastHeaderClicked = null;
@@ -120,21 +118,15 @@ namespace WpfXmlClrNameSpaces2015
 
         private void Sort(string sortBy, ListSortDirection direction)
         {
-            ICollectionView dataView =
-              CollectionViewSource.GetDefaultView(lstview.ItemsSource);
-
-            dataView.SortDescriptions.Clear();
+            XmlClrNameSpaceItems.SortDescriptions.Clear();
             SortDescription sd = new SortDescription(sortBy, direction);
-            dataView.SortDescriptions.Add(sd);
-            dataView.Refresh();
+            XmlClrNameSpaceItems.SortDescriptions.Add(sd);
+            XmlClrNameSpaceItems.Refresh();
         }
 
         private void ApplyButton_Click(object sender, RoutedEventArgs e)
         {
-            ICollectionView dataView =
-              CollectionViewSource.GetDefaultView(lstview.ItemsSource);
-
-            dataView.Refresh();
+            XmlClrNameSpaceItems.Refresh();
         }
 
         bool XmlNamespaceFilter(object obj)
